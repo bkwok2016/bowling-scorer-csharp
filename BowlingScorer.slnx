@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="BowlingGame.Tests/BowlingGame.Tests.csproj" />
+  <Project Path="BowlingGame/BowlingGame.csproj" />
+  <Project Path="BowlingWebApp.SeleniumTests/BowlingWebApp.SeleniumTests.csproj" />
+</Solution>
