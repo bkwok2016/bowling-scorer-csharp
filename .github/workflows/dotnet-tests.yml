@@ -13,11 +13,11 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Restore solution
+        run: dotnet restore BowlingScorer.sln
 
-      - name: Build all projects
-        run: dotnet build --no-restore
+      - name: Build solution
+        run: dotnet build BowlingScorer.sln --no-restore
 
       - name: Run unit tests (BowlingGame.Tests)
         run: dotnet test BowlingGame.Tests/BowlingGame.Tests.csproj --no-build --verbosity normal
