@@ -1,0 +1,54 @@
+@page
+@model BowlingWebApp.Pages.IndexModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Bowling Game Scorer (C#)</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 640px; margin: 40px auto; }
+        .frame-row { margin-bottom: 8px; }
+        label { display: inline-block; width: 90px; }
+        input[type="text"] { width: 140px; padding: 4px; }
+        button { margin-top: 16px; padding: 8px 20px; font-size: 15px; cursor: pointer; }
+        #error-message { color: #b00020; font-weight: bold; }
+        #results { margin-top: 24px; border-top: 1px solid #ccc; padding-top: 16px; }
+        #final-score { font-size: 1.3em; color: #1a5e20; }
+        ul { list-style: none; padding-left: 0; }
+    </style>
+</head>
+<body>
+    <h1>Bowling Game Scorer (C#)</h1>
+    <p>Enter each frame's rolls, comma-separated (e.g. <code>8,/</code> for a spare, <code>X</code> for a strike).</p>
+
+    <form id="score-form" method="post">
+        @for (int i = 0; i < 10; i++)
+        {
+            <div class="frame-row">
+                <label for="frame-@i">Frame @(i + 1):</label>
+                <input type="text" id="frame-@i" name="frame-@i" value="@Model.Values[i]" placeholder="e.g. 8,/ or X" />
+            </div>
+        }
+        <button type="submit" id="calculate-btn">Calculate Score</button>
+    </form>
+
+    @if (Model.Error is not null)
+    {
+        <p id="error-message">Error: @Model.Error</p>
+    }
+
+    @if (Model.Scores is not null)
+    {
+        <div id="results">
+            <h2>Cumulative Scores</h2>
+            <ul>
+                @for (int i = 0; i < Model.Scores.Count; i++)
+                {
+                    <li>Frame @(i + 1): <span id="score-@i">@Model.Scores[i]</span></li>
+                }
+            </ul>
+            <h2>Total: <span id="final-score">@Model.Total</span></h2>
+        </div>
+    }
+</body>
+</html>

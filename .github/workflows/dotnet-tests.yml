@@ -1,0 +1,47 @@
+name: Dotnet Selenium UI Tests
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build all projects
+        run: dotnet build --no-restore
+
+      - name: Run unit tests (BowlingGame.Tests)
+        run: dotnet test BowlingGame.Tests/BowlingGame.Tests.csproj --no-build --verbosity normal
+
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Start web app in the background
+        run: |
+          nohup dotnet run --project BowlingWebApp/BowlingWebApp.csproj --urls "http://localhost:5000" > webapp.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -sf http://localhost:5000/ > /dev/null; then
+              echo "Web app is up"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Run Selenium UI tests
+        env:
+          HEADLESS: "true"
+          BASE_URL: "http://localhost:5000"
+        run: dotnet test BowlingWebApp.SeleniumTests/BowlingWebApp.SeleniumTests.csproj --no-build --verbosity normal
+
+      - name: Show web app logs on failure
+        if: failure()
+        run: cat webapp.log
